@@ -1,0 +1,11 @@
+.header {
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    .title {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}

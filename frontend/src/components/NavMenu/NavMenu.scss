@@ -1,6 +1,10 @@
-.nav-menu {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+.footer {
+    padding-top: 15px;
+    .nav-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: white;
+    }
 }

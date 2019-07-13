@@ -6,8 +6,8 @@ import { Icon } from '@rmwc/icon'
 import './NavMenu.scss';
 
 const navMenu = () => (
-  <footer className="nav-menu">
-    <TabBar>
+  <footer className="footer">
+    <TabBar className="nav-menu">
         <Tab>
         <NavLink to="/new"><Icon icon="add_box" /></NavLink>
         </Tab>

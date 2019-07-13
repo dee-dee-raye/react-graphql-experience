@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.2.0",
     "@rmwc/button": "^5.5.2",
     "node-sass": "^4.12.0",
     "react": "^16.8.6",

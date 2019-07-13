@@ -8,27 +8,24 @@ import NavMenu from './components/NavMenu';
 import Header from './components/Header';
 
 import AuthPage from './pages/Auth';
+import FeedPage from './pages/Feed';
 
 class App extends Component {
   render() {
-    let header = null;
-    let navMenu = null;
-    if (this.props.loggedIn) {
-      header = <Header />;
-      navMenu = <NavMenu />;
-    }
-
     return (
       <BrowserRouter>
         <React.Fragment>
-          {header}
+          {this.props.loggedIn && <Header />}
           <main className="main-content">
             <Switch>
-              <Redirect from="/" to="/auth" exact />
-              <Route path="/auth" component={AuthPage} />
+              {!this.props.loggedIn && <Redirect from="/" to="/auth" exact />}
+              {this.props.loggedIn && <Redirect from="/" to="/feed" exact />}
+              {!this.props.loggedIn && <Route path="/auth" component={AuthPage} />}
+              {this.props.loggedIn && <Redirect from="/auth" to="/feed" exact />}
+              {this.props.loggedIn && <Route path="/feed" component={FeedPage} />}
             </Switch>
           </main>
-          {navMenu}
+          {this.props.loggedIn && <NavMenu />}
         </React.Fragment>
       </BrowserRouter>
     );

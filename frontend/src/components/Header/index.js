@@ -1,16 +1,18 @@
 import React from 'react';
-import { ToolbarFixedAdjust, Toolbar, ToolbarRow, ToolbarTitle} from '@rmwc/toolbar'
+import { TopAppBar, TopAppBarRow, TopAppBarTitle, TopAppBarSection, TopAppBarFixedAdjust} from  '@rmwc/top-app-bar';
 
 import './Header.scss';
 
 const header = () => (
     <header className="header">
-        <Toolbar>
-            <ToolbarRow className="row">
-            <ToolbarTitle className="title">Doggogram</ToolbarTitle>
-            </ToolbarRow>
-        </Toolbar>
-        <ToolbarFixedAdjust />
+        <TopAppBar fixed>
+            <TopAppBarRow>
+            <TopAppBarSection className="row">
+                <TopAppBarTitle className="title">Doggogram</TopAppBarTitle>
+            </TopAppBarSection>
+            </TopAppBarRow>
+        </TopAppBar>
+        <TopAppBarFixedAdjust />
     </header>
 
 );

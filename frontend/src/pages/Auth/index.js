@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import { Card, CardPrimaryAction, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
-import { FormField } from '@rmwc/formfield';
 import { Typography } from '@rmwc/typography'
 import { TextField } from '@rmwc/textfield'
 
@@ -12,9 +12,12 @@ class AuthPage extends Component {
     super(props);
     this.state = {
         isLogin: true,
+        isLoggedIn: false,
         email: '',
         password: '',
-        username: ''
+        username: '',
+        profile: {},
+        token: ''
       };
   }
 
@@ -27,6 +30,9 @@ class AuthPage extends Component {
       return;
     }
 
+    console.log(this.state.email)
+    console.log(this.state.password)
+
     let requestBody = {
       query: `
         query {
@@ -34,7 +40,6 @@ class AuthPage extends Component {
             userId
             token
             tokenExpiration
-            username
           }
         }
       `
@@ -44,14 +49,18 @@ class AuthPage extends Component {
       requestBody = {
         query: `
           mutation {
-            createUser(userInput: {email: "${this.state.email}", password: "${this.state.password}", userName: "${this.state.username}"}) {
+            createUser(userInput: {email: "${this.state.email}", 
+            password: "${this.state.password}", 
+            userName: "${this.state.username}"}) {
               _id
               email
-              username
+              userName
             }
           }
         `
       };
+
+      console.log(this.state.username)
     }
 
     fetch('http://localhost:8000/graphql', {
@@ -68,7 +77,15 @@ class AuthPage extends Component {
         return res.json();
       })
       .then(resData => {
+          if (this.state.isLogin) {
+              this.props.setToken({token: resData.data.login.token, 
+                tokenExpiration: resData.data.login.tokenExpiration});
+              this.props.setLoggedIn(true);
+              this.props.setProfile({userId: resData.data.login.userId})
+          }
         console.log(resData);
+        this.props.setLoggedIn(true);
+        this.props.setProfile({'username': resData.username});
       })
       .catch(err => {
         console.log(err);
@@ -86,28 +103,55 @@ class AuthPage extends Component {
       }
 
     return (
-      <Card className="auth-form">
-          <CardPrimaryAction className="primary-content">
-            <Typography className="title" use="headline6" tag="h2"> {this.state.isLogin ? 'Login' : 'Signup'} </Typography>
-                { usernameField }
-                <TextField fullwidth label="Email" type="email"
-                value={this.state.email} 
-                onChange={(e) => {this.setState({email: e.currentTarget.value})}} />
-                <TextField fullwidth label="Password" type="password"
-                value={this.state.password}
-                onChange={(e) => {this.setState({password: e.currentTarget.value})}} />
-          </CardPrimaryAction>
-          <CardActions>
-            <CardActionButtons>
-                <CardActionButton onClick={this.submitHandler}>Submit</CardActionButton>
-                <CardActionButton onClick={this.switchModeHandler}>
-                    Switch to {this.state.isLogin ? 'Signup' : 'Login'}
-                </CardActionButton>
-            </CardActionButtons>
-          </CardActions>
-      </Card>
+        <div className="auth-area">
+            <Card className="auth-card">
+                <CardPrimaryAction className="primary-content">
+                    <Typography style= {{textAlign: 'center'}} use="headline6" tag="h2"> {this.state.isLogin ? 'Login' : 'Signup'} </Typography>
+                        { usernameField }
+                        <TextField fullwidth label="Email" type="email"
+                        value={this.state.email} 
+                        onChange={(e) => {this.setState({email: e.currentTarget.value})}} />
+                        <TextField fullwidth label="Password" type="password"
+                        value={this.state.password}
+                        onChange={(e) => {this.setState({password: e.currentTarget.value})}} />
+                </CardPrimaryAction>
+                <CardActions>
+                    <CardActionButtons>
+                        <CardActionButton onClick={this.submitHandler}>Submit</CardActionButton>
+                        <CardActionButton onClick={this.switchModeHandler}>
+                            Switch to {this.state.isLogin ? 'Signup' : 'Login'}
+                        </CardActionButton>
+                    </CardActionButtons>
+                </CardActions>
+            </Card>
+        </div>
     );
   }
 }
 
-export default AuthPage;
+function mapStateToProps(state, ownProps) {
+    return {
+      token: state.token,
+      email: state.email,
+      tokenExpiration: state.tokenExpiration,
+      loggedIn: state.isLoggedIn
+    }
+  }
+  
+  function mapDispatchToProps(dispatch) {
+    return {
+      setLoggedIn: (loggedIn) => {
+        dispatch({ type: 'SET_LOGGED_IN', loggedIn: loggedIn })
+      },
+      setProfile: (profile) => {
+        dispatch({ type: 'SET_PROFILE', profile: profile }) 
+      },
+      setToken: (token) => {
+          dispatch({ type: 'SET_TOKEN', token: token})
+      }
+    }
+  }
+  
+  
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthPage)

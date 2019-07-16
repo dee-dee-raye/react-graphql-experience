@@ -15,7 +15,7 @@ const post = (props) => (
                 <CardMedia
                 square
                 style={{
-                    backgroundImage: 'url('+props.post.imageUri+')'
+                    backgroundImage: 'url('+props.post.imageUrl+')'
                 }}
                 />
             </CardPrimaryAction>

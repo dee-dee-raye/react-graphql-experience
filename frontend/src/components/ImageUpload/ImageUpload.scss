@@ -1,0 +1,42 @@
+/* use a hand cursor intead of arrow for the action buttons */
+.filepond--file-action-button {
+    cursor: pointer;
+    background-color: #6200EE;
+}
+
+/* the text color of the drop label*/
+.filepond--drop-label {
+    color: white;
+}
+
+/* underline color for "Browse" button */
+.filepond--label-action {
+    text-decoration-color:white;
+}
+
+/* the background color of the filepond drop area */
+.filepond--panel-root {
+    background-color: #6200EE;
+}
+
+/* the background color of the file and file panel (used when dropping an image) */
+.filepond--item-panel {
+    background-color: #03DAC5;
+}
+
+.mdc-card__media-content {
+    top: 5rem;
+}
+
+/* the icon color of the black action buttons */
+.filepond--file-action-button {
+    color: #03DAC5;
+}
+
+.filepond--hopper {
+    margin-top: 16px;
+}
+
+.filepond--wrapper {
+    width: 21rem;
+}

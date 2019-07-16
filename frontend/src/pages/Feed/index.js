@@ -25,7 +25,7 @@ class FeedPage extends Component {
             _id
             description
             date
-            imageUri
+            imageUrl
           }
         }
       `
@@ -46,7 +46,6 @@ class FeedPage extends Component {
         return res.json();
       })
       .then(resData => {
-        console.log(resData);
         this.setState({posts: resData.data.posts})
       })
       .catch(err => {

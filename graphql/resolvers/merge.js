@@ -40,7 +40,8 @@ const transformPost = post => {
     ...post._doc,
     _id: post.id,
     date: dateToString(post._doc.date),
-    creator: user.bind(this, post.creator)
+    creator: user.bind(this, post.creator),
+    imageUrl: post._doc.imageUrl
   };
 };
 

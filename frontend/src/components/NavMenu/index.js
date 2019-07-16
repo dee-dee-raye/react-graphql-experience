@@ -8,9 +8,11 @@ import './NavMenu.scss';
 const navMenu = () => (
   <footer className="footer">
     <TabBar className="nav-menu">
-        <Tab>
-        <NavLink to="/new"><Icon icon="add_box" /></NavLink>
-        </Tab>
+      <NavLink style={{width: '100%'}} to="/new">
+          <Tab style={{width: '100%'}}>
+            <Icon icon="add_box" />
+          </Tab>
+        </NavLink>
     </TabBar>
   </footer>
 );

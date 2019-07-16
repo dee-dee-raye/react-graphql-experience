@@ -9,6 +9,7 @@ import Header from './components/Header';
 
 import AuthPage from './pages/Auth';
 import FeedPage from './pages/Feed';
+import CreatePostPage from './pages/CreatePost';
 
 class App extends Component {
   render() {
@@ -23,6 +24,8 @@ class App extends Component {
               {!this.props.loggedIn && <Route path="/auth" component={AuthPage} />}
               {this.props.loggedIn && <Redirect from="/auth" to="/feed" exact />}
               {this.props.loggedIn && <Route path="/feed" component={FeedPage} />}
+              {this.props.loggedIn && <Route path="/new" component={CreatePostPage} />}
+              {!this.props.loggedIn && <Route path="/new" component={CreatePostPage} />}
             </Switch>
           </main>
           {this.props.loggedIn && <NavMenu />}

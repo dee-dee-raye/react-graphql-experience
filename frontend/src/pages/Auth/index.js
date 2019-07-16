@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import { Card, CardPrimaryAction, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
-import { Typography } from '@rmwc/typography'
-import { TextField } from '@rmwc/textfield'
+import { Typography } from '@rmwc/typography';
+import { TextField } from '@rmwc/textfield';
 
 import './Auth.scss';
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import { connect } from 'react-redux';
 import Post from '../../components/Post';
 
 import './Feed.scss';
@@ -26,6 +26,11 @@ class FeedPage extends Component {
             description
             date
             imageUrl
+            creator {
+                _id
+                userName
+                profilePic
+            }
           }
         }
       `
@@ -55,7 +60,7 @@ class FeedPage extends Component {
 
   render() {
     const postList = this.state.posts.map(post => {
-        return <Post key={post._id} post={post}></Post>
+        return <Post token={this.props.token} key={post._id} post={post} currentUser={this.props.currentUser}></Post>
     })
     return (
         <div className="feed-area">
@@ -66,9 +71,10 @@ class FeedPage extends Component {
 }
 
 function mapStateToProps(state) {
-    const { token } = state;
+    const { token, currentUser } = state;
     return {
-        token
+        token,
+        currentUser
     };
   }
   

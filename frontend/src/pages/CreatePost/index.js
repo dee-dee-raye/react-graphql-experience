@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import { Card, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
 import { Typography } from '@rmwc/typography';
 import { LinearProgress } from '@rmwc/linear-progress';
@@ -7,6 +9,7 @@ import { IconButton } from '@rmwc/icon-button';
 
 import './CreatePost.scss';
 import ImageUpload from '../../components/ImageUpload';
+import { fetchGeneralAuthorized, fetchImageUpload } from '../../api';
 
 
 class CreatePostPage extends Component {
@@ -24,73 +27,37 @@ class CreatePostPage extends Component {
         this.setState({image: image});
     }
 
-    shareHandler = () => {
+    shareHandler = async () => {
         if (this.state.description.trim().length === 0 || this.state.image === {}) {
             return;
         }
+
         this.setState({
             loadProgress: 0.2
         });
         const dateString = new Date().toISOString();
-        
         const fd = new FormData();
-        console.log(this.state.image)
         fd.append('image', this.state.image, this.state.image.name);
+        let resDataImage = await fetchImageUpload(fd);
+        this.setState({imageUrl: resDataImage.fileUrl});
+        this.setState({
+            loadProgress: .5
+        });
 
-        fetch('https://us-central1-reactpets-be223.cloudfunctions.net/uploadFile', {
-        method: 'POST',
-        body: fd,
-        headers: {
-        }
-        })
-        .then(res => {
-            if (res.status !== 200 && res.status !== 201) {
-            throw new Error('Failed!');
-            }
-            return res.json();
-        })
-        .then(resData => {
-            this.setState({
-                loadProgress: .5
-            });
-            console.log(resData);
-            this.setState({imageUrl: resData.fileUrl});
-            let requestBody = {
-                query: `
-                mutation {
-                    createPost(postInput: {description: "${this.state.description}", date:"${dateString}", imageUrl:"${this.state.imageUrl}"}) {
-                        imageUrl
-                    }
-                  }
-                `
-                };
-            fetch('http://localhost:8000/graphql', {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + this.props.token
-            }
-            })
-            .then(res => {
-                if (res.status !== 200 && res.status !== 201) {
-                throw new Error('Failed!');
+        let requestBody = {
+            query: `
+            mutation {
+                createPost(postInput: {description: "${this.state.description}", date:"${dateString}", imageUrl:"${this.state.imageUrl}"}) {
+                    imageUrl
                 }
-                return res.json();
-            })
-            .then(resData => {
-                console.log(resData);
-                this.setState({
-                    loadProgress: 1.0
-                });
-                this.goBack();
-            })
-            .catch(err => {
-                console.log(err);
+                }
+            `
+            };
+        fetchGeneralAuthorized(requestBody, this.props.token.token).then(res => {
+            this.setState({
+                loadProgress: 1.0
             });
-        })
-        .catch(err => {
-            console.log(err);
+            this.goBack();
         });
     };
 
@@ -114,7 +81,7 @@ class CreatePostPage extends Component {
                 label="go back"
                 onClick={this.goBack}/>
                 <Card className="create-post-card">
-                    <ImageUpload file={this.state.file} onHandleImageUpload={this.imageUploadHandler}></ImageUpload>
+                    <ImageUpload text={'Upload Post Photo'} file={this.state.file} onHandleImageUpload={this.imageUploadHandler}></ImageUpload>
                     <TextField className="create-post-caption" label="Caption"
                     value={this.state.description}
                     onChange={(e) => {this.setState({description: e.currentTarget.value})}} />
@@ -129,4 +96,11 @@ class CreatePostPage extends Component {
     }
 }
 
-export default CreatePostPage;
+function mapStateToProps(state) {
+    const { token } = state;
+    return {
+        token
+    };
+  }
+  
+  export default connect(mapStateToProps)(CreatePostPage);

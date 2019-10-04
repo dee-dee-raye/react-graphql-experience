@@ -26,3 +26,12 @@ export function token(state = {}, action) {
             return state;
     }
 }
+
+export function currentUser(currentUser = {}, action) {
+    if (action.type === AuthActionTypes.SET_CURRENT_USER) {
+        return {
+            ...action.currentUser
+        }
+    }
+    return currentUser
+}

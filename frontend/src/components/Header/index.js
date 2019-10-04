@@ -17,5 +17,5 @@ const header = () => (
 
 );
 
-export default header
+export default header;
 

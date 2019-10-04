@@ -1,0 +1,58 @@
+.profile-area-top {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    .profile-card {
+        margin: auto;
+        padding: 0 1rem 1rem 1rem;
+        display: flex;
+        width: 100%;
+
+        .edit-button-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+
+            .edit-button {
+                width: 100%;
+            }
+        }
+
+        .title, .bio, .stats-area {
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+
+        .stats-area {
+            display: flex;
+            justify-content: space-evenly;
+
+            .stats-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
+}
+
+.profile-area-bottom {
+    width: 100%;
+
+    .image-list {
+        display: flex;
+        justify-content: space-between;
+
+        .image-item {
+            width: 32.5%;
+            margin: 1px; 
+        }
+
+        .image-aspect-container {
+            padding-bottom: calc(100% / 1);
+        } 
+    }
+}

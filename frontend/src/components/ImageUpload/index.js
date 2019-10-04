@@ -16,7 +16,6 @@ registerPlugin(FilePondPluginImageExifOrientation, FilePondPluginImagePreview, F
 class ImageUpload extends Component {
 
     constructor(props) {
-        console.log(props)
         super(props);
 
         this.state = {
@@ -24,20 +23,11 @@ class ImageUpload extends Component {
         };
     }
 
-    encodeImage(image) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
-            this.props.onHandleImageUpload(base64String);
-        };
-        reader.readAsDataURL(image[0].file);
-    }
-
     render() {
         return(
             <FilePond 
             ref={ref => this.pond = ref}
-            labelIdle= "Drag & Drop Your Pictures"
+            labelIdle= {this.props.text}
             files={this.state.files}
             imageResizeTargetWidth={200}
             imageCropAspectRatio= {1}
@@ -47,7 +37,6 @@ class ImageUpload extends Component {
             allowFileEncode={true}
             imageTransformOutputQuality={60}
             onupdatefiles={(fileItems) => {
-                // this.encodeImage(fileItems);
                 this.setState({files: fileItems});
                 if(this.state.files.length > 0) {
                     this.props.onHandleImageUpload(fileItems[0].file);

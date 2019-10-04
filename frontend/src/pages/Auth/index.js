@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Card, CardPrimaryAction, CardActions, CardActionButtons, CardActionButton } from '@rmwc/card';
 import { Typography } from '@rmwc/typography';
 import { TextField } from '@rmwc/textfield';
+import { fetchGeneral } from '../../api';
 
 import './Auth.scss';
 
@@ -25,71 +26,93 @@ class AuthPage extends Component {
     this.setState({ isLogin: !this.state.isLogin });
   };
 
-  submitHandler = () => {
-    if (this.state.email.trim().length === 0 || this.state.password.trim().length === 0) {
-      return;
-    }
-
-    console.log(this.state.email)
-    console.log(this.state.password)
-
-    let requestBody = {
-      query: `
-        query {
-          login(email: "${this.state.email}", password: "${this.state.password}") {
-            userId
-            token
-            tokenExpiration
+  fetchLogin = async () => {
+    const  requestBody = {
+        query: `
+          query {
+            login(email: "${this.state.email}", password: "${this.state.password}") {
+              userId
+              token
+              tokenExpiration
+            }
           }
-        }
-      `
-    };
+        `
+      };
+      let resData = await fetchGeneral(requestBody);
+      this.props.setToken({token: resData.data.login.token, 
+        tokenExpiration: resData.data.login.tokenExpiration});
+     
+      this.props.setProfile({userId: resData.data.login.userId});
+      if(this.state.isLogin) {
+        await this.fetchGetUser(resData.data.login.userId);
+        this.props.setLoggedIn(true);
+      } else {
+        this.props.setLoggedIn(true);
+      }
+  };
 
-    if (!this.state.isLogin) {
-      requestBody = {
+  fetchCreateUser = async () => {
+    const requestBody = {
         query: `
           mutation {
             createUser(userInput: {email: "${this.state.email}", 
             password: "${this.state.password}", 
             userName: "${this.state.username}"}) {
               _id
-              email
               userName
+              email
+              profilePic
+              createdPosts {
+                _id
+                description
+                date
+                imageUrl
+              }
             }
           }
         `
       };
+      const resData = await fetchGeneral(requestBody);
+      this.props.setProfile({userId: resData.data.user._id});
+      this.props.setCurrentUser({...resData.data.user});
+      this.fetchLogin();
+  }
 
-      console.log(this.state.username)
+  fetchGetUser = async (userId) => {
+      const requestBody = {
+          query:`
+          query {
+            user(userId: "${userId}") {
+            _id
+            userName
+            email
+            profilePic
+            createdPosts {
+                _id
+                description
+                date
+                imageUrl
+            }
+          }
+        }
+          `
+      };
+      const resData = await fetchGeneral(requestBody);
+      console.log(resData)
+      this.props.setCurrentUser({...resData.data.user});
+  }
+
+  submitHandler = () => {
+    if (this.state.email.trim().length === 0 || this.state.password.trim().length === 0) {
+      return;
     }
 
-    fetch('http://localhost:8000/graphql', {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-      .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Failed!');
-        }
-        return res.json();
-      })
-      .then(resData => {
-          if (this.state.isLogin) {
-              this.props.setToken({token: resData.data.login.token, 
-                tokenExpiration: resData.data.login.tokenExpiration});
-              this.props.setLoggedIn(true);
-              this.props.setProfile({userId: resData.data.login.userId})
-          }
-        console.log(resData);
-        this.props.setLoggedIn(true);
-        this.props.setProfile({'username': resData.username});
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    if (this.state.isLogin) {
+        this.fetchLogin();
+    } else {
+        this.fetchCreateUser();
+    }
+
   };
 
   render() {
@@ -148,6 +171,9 @@ function mapStateToProps(state, ownProps) {
       },
       setToken: (token) => {
           dispatch({ type: 'SET_TOKEN', token: token})
+      },
+      setCurrentUser: (user) => {
+          dispatch({ type: 'SET_CURRENT_USER', currentUser: user})
       }
     }
   }

@@ -15,7 +15,8 @@ module.exports = {
       const user = new User({
         email: args.userInput.email,
         password: hashedPassword,
-        userName: args.userInput.userName
+        userName: args.userInput.userName,
+        profilePic: 'https://firebasestorage.googleapis.com/v0/b/reactpets-be223.appspot.com/o/profile.png?alt=media&token=7013f913-500c-4f43-9a72-de3d2907fd64'
       });
 
       const result = await user.save();

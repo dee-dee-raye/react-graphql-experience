@@ -1,19 +1,35 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { Tab, TabBar } from '@rmwc/tabs';
-import { Icon } from '@rmwc/icon'
+
+import { Icon } from '@rmwc/icon';
+import { Avatar } from '@rmwc/avatar';
 
 import './NavMenu.scss';
 
-const navMenu = () => (
+const navMenu = (props) => (
   <footer className="footer">
-    <TabBar className="nav-menu">
-      <NavLink style={{width: '100%'}} to="/new">
-          <Tab style={{width: '100%'}}>
-            <Icon icon="add_box" />
-          </Tab>
+    <ul className="nav-menu" style={{width: '100%'}}>
+    <li className="nav-item">
+      <NavLink style={{width: '50%'}} to="/feed">
+            <Icon icon="home" />
         </NavLink>
-    </TabBar>
+      </li>
+      <li className="nav-item">
+      <NavLink style={{width: '50%'}} to="/new">
+            <Icon icon="add_box" />
+        </NavLink>
+      </li>
+      <li className="nav-item">
+      <NavLink style={{width: '50%'}} to="/profile">
+            <Avatar
+            src={props.currentUser.profilePic}
+            size="medium"
+            name={props.currentUser.username}
+            />
+        </NavLink>
+      </li>
+    </ul>
   </footer>
 );
 

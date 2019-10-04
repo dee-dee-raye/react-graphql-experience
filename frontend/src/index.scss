@@ -33,7 +33,8 @@ $mdc-typography-font-family: 'Open Sans';
 @import '@material/tab-indicator/mdc-tab-indicator.scss';
 @import '@material/toolbar/mdc-toolbar.scss';
 @import '@rmwc/icon/icon';
-
+@import '@rmwc/avatar/avatar';
+@import '@material/image-list/mdc-image-list.scss';
 
 html {
   font-family: 'Open Sans', sans-serif;
